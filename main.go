@@ -10,8 +10,7 @@ func main() {
 		fmt.Println("Incorrect usage!")
 		printUsage()
 	}
-	app.wGet
-	app.wGet(os.Args[2]) // wget
+	app.wget(os.Args[2]) // wget
 }
 
 func printUsage() {

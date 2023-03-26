@@ -1,5 +1,5 @@
 package app
 
-func wGet(url string) {
-
+func wget(url string) string {
+	return url
 }
