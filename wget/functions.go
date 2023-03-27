@@ -2,12 +2,13 @@ package wget
 
 import (
 	"fmt"
-	"strings"
-	//"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
+	//"os/exec"
 )
 
 // Check if we received an error on our last function call
@@ -29,7 +30,7 @@ func getResponse(urls string, url_split []string) *http.Response {
 
 	fmt.Println("Resolving", url_split[2], "("+url_split[2]+")...", add[0], add[1])
 	tr := new(http.Transport)
-	fmt.Print("Connecting ", url_split[2], " ("+url_split[2]+")|", add[0], "|:" + Port + "...")
+	fmt.Print("Connecting ", url_split[2], " ("+url_split[2]+")|", add[0], "|:"+Port+"...")
 	client := &http.Client{Transport: tr}
 	resp, err := client.Get(urls)
 	if err != nil {
@@ -41,7 +42,12 @@ func getResponse(urls string, url_split []string) *http.Response {
 		return resp
 	}
 	errorChecker(err)
-	fmt.Println("")
+	fmt.Println()
+	size, filetype := FileInfo(url_split[4], urls)
+	fmt.Println("Length:", size, "[" + filetype + "]")
+	fmt.Println("Saving to:", url_split[4])
+	fmt.Println()
+	fmt.Println(url_split[4]+ "\t\t\t\t" + "s")
 	return resp
 }
 
@@ -58,12 +64,19 @@ func GetPort(s string) (port string) {
 	return port
 }
 
-func FileInfo() (size int64, FileType string){
-	fi, err := os.Stat("/path/to/file")
+func FileInfo(FileName, url string) (size int64, FileType string) {
+	tr := new(http.Transport)
+	client := &http.Client{Transport: tr}
+	resp, err := client.Get(url)
+
 	if err != nil {
+		fmt.Println(err)
 		return 0, ""
 	}
-	// get the size
-	size = fi.Size()
-	return size, "img"
+
+	size = resp.ContentLength
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	contentType := http.DetectContentType(bytes)
+
+	return size, contentType
 }
