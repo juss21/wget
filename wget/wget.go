@@ -1,14 +1,16 @@
 package wget
 
 import (
-	"github.com/schollz/progressbar/v3"
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 const (
@@ -31,8 +33,19 @@ func Run(url, filename string) {
 	fmt.Println("\t" + url)
 
 	response := getResponse(url, url_split)
-	writeToFile(url_filename, response, url_split)
-	fmt.Println(time.Now().Format("--2006-01-02 15:04:05--"), )
+	size, _ := FileInfo(url_split[4], url)
+	elapsed := writeToFile(url_filename, response, url_split)
+	h, _ := time.ParseDuration(elapsed.String())
+	var AvgDown float64
+	if h.Seconds() < 1 {
+		AvgDown = float64(size) * (h.Seconds()) / 10
+	} else {
+		AvgDown = float64(size) / (h.Seconds()) / 1000000
+	}
+	//fmt.Println(elapsed, size, h.Seconds())
+
+	fmt.Println(time.Now().Format("2006-01-02 15:04:05 - Download completed! "), "Time elapsed:", elapsed,
+	 "Average download speed:", math.Round(AvgDown*10)/10, "MB/s")
 
 	// fmt.Println(url_split, url_httpstatus, url_webaddress, url_directory, url_filename)
 
@@ -41,7 +54,7 @@ func Run(url, filename string) {
 }
 
 // Write the response of the GET request to file
-func writeToFile(fileName string, resp *http.Response, url_split []string) {
+func writeToFile(fileName string, resp *http.Response, url_split []string) (elapsed time.Duration) {
 	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0777)
 	errorChecker(err)
 
@@ -50,15 +63,14 @@ func writeToFile(fileName string, resp *http.Response, url_split []string) {
 
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	errorChecker(err)
-
-	bar := progressbar.DefaultBytes(
+	bar := progressbar.DefaultBytes( 
 		resp.ContentLength,
-		"downloading",
+		"Downloading: "+url_split[4],
 	)
-	//_, _ = io.Copy(bufferedWriter, bar)
 	_, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
 	errorChecker(err)
 	t := time.Now()
-	elapsed := t.Sub(start)
-	fmt.Println(elapsed)
+	elapsed = t.Sub(start)
+
+	return elapsed
 }

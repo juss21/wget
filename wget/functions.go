@@ -21,7 +21,7 @@ func errorChecker(err error) {
 }
 
 // Make the GET request to a url, return the response
-func getResponse(urls string, url_split []string) *http.Response {
+func getResponse(urls string, url_split []string) *http.Response{
 	add, err := net.LookupIP(url_split[2])
 
 	net.LookupPort("tcp", "https")
@@ -49,7 +49,6 @@ func getResponse(urls string, url_split []string) *http.Response {
 	fmt.Println("Length:", size, CalcSize(size), "["+filetype+"]")
 	fmt.Println("Saving to:", url_split[4])
 	fmt.Println()
-	fmt.Println("Downloading:", url_split[4])
 	return resp
 }
 
