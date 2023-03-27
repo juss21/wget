@@ -29,8 +29,8 @@ func Run(url, filename string) {
 	fmt.Print(download_started)
 	fmt.Println("\t\t" + url)
 
-	response := getResponse(url)
-	writeToFile(url_filename, response)
+	response := getResponse(url, url_split)
+	writeToFile(url_filename, response, url_split)
 
 	// fmt.Println(url_split, url_httpstatus, url_webaddress, url_directory, url_filename)
 
@@ -39,7 +39,7 @@ func Run(url, filename string) {
 }
 
 // Write the response of the GET request to file
-func writeToFile(fileName string, resp *http.Response) {
+func writeToFile(fileName string, resp *http.Response, url_split []string) {
 	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0777)
 	errorChecker(err)
 	defer file.Close()
