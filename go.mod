@@ -1,3 +1,3 @@
-module 01.kood.tech/git/kasepuu/wget
+module wget
 
 go 1.19
