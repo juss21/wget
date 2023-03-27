@@ -2,10 +2,11 @@ package wget
 
 import (
 	"fmt"
+	"strings"
 	//"io"
 	"net"
-	"net/url"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -24,24 +25,45 @@ func getResponse(urls string, url_split []string) *http.Response {
 	net.LookupPort("tcp", "https")
 
 	u, err := url.Parse(urls)
-	host, port, err := net.SplitHostPort(u.Host)
-	fmt.Println(u.Host, urls)
-	fmt.Println(host, port)
+	Port := GetPort(u.Scheme)
 
 	fmt.Println("Resolving", url_split[2], "("+url_split[2]+")...", add[0], add[1])
 	tr := new(http.Transport)
-	fmt.Println("Connecting", url_split[2], "("+url_split[2]+") |"+string(add[0])+"|")
+	fmt.Print("Connecting ", url_split[2], " ("+url_split[2]+")|", add[0], "|:" + Port + "...")
 	client := &http.Client{Transport: tr}
 	resp, err := client.Get(urls)
-	//fmt.Println(url_split[2])
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Print("HTTP request sent, awaiting response... ", resp.StatusCode)
+	fmt.Println(" connected.")
+	fmt.Print("HTTP request sent, awaiting response... ", resp.Status)
 	if resp.StatusCode != 200 {
 		return resp
 	}
 	errorChecker(err)
 	fmt.Println("")
 	return resp
+}
+
+func GetPort(s string) (port string) {
+	if strings.ToLower(s) == "https" {
+		port = "443"
+	} else if strings.ToLower(s) == "http" {
+		port = "80"
+	} else if strings.ToLower(s) == "telnet" {
+		port = "23"
+	} else if strings.ToLower(s) == "ftp" {
+		port = "21"
+	}
+	return port
+}
+
+func FileInfo() (size int64, FileType string){
+	fi, err := os.Stat("/path/to/file")
+	if err != nil {
+		return 0, ""
+	}
+	// get the size
+	size = fi.Size()
+	return size, "img"
 }

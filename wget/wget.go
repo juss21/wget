@@ -27,7 +27,7 @@ func Run(url, filename string) {
 
 	download_started := time.Now().Format("--2006-01-02 15:04:05--")
 	fmt.Print(download_started)
-	fmt.Println("\t\t" + url)
+	fmt.Println("\t" + url)
 
 	response := getResponse(url, url_split)
 	writeToFile(url_filename, response, url_split)
