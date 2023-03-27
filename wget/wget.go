@@ -1,6 +1,7 @@
 package wget
 
 import (
+	"github.com/schollz/progressbar/v3"
 	"bufio"
 	"fmt"
 	"io"
@@ -31,6 +32,7 @@ func Run(url, filename string) {
 
 	response := getResponse(url, url_split)
 	writeToFile(url_filename, response, url_split)
+	fmt.Println(time.Now().Format("--2006-01-02 15:04:05--"), )
 
 	// fmt.Println(url_split, url_httpstatus, url_webaddress, url_directory, url_filename)
 
@@ -42,9 +44,21 @@ func Run(url, filename string) {
 func writeToFile(fileName string, resp *http.Response, url_split []string) {
 	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0777)
 	errorChecker(err)
+
+	start := time.Now()
 	defer file.Close()
+
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	errorChecker(err)
-	_, err = io.Copy(bufferedWriter, resp.Body)
+
+	bar := progressbar.DefaultBytes(
+		resp.ContentLength,
+		"downloading",
+	)
+	//_, _ = io.Copy(bufferedWriter, bar)
+	_, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
 	errorChecker(err)
+	t := time.Now()
+	elapsed := t.Sub(start)
+	fmt.Println(elapsed)
 }
