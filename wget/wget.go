@@ -3,10 +3,12 @@ package wget
 import (
 	"bufio"
 	"fmt"
+	//"go/format"
 	"io"
 	"math"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,12 +21,8 @@ const (
 
 func Run(url, filename string) {
 	url_split := strings.Split(url, "/")
-	// url_httpstatus := url_split[0]
-	// url_webaddress := url_split[2]
-	//	url_directory := ""
 	url_filename := url_split[3]
 	if len(url_split) == 5 {
-		//		url_directory = url_split[3]
 		url_filename = url_split[4]
 	}
 
@@ -42,15 +40,11 @@ func Run(url, filename string) {
 	} else {
 		AvgDown = float64(size) / (h.Seconds()) / 1000000
 	}
-	//fmt.Println(elapsed, size, h.Seconds())
-
+	SizeInt := strconv.FormatInt(size, 10)
+	
 	fmt.Println(time.Now().Format("2006-01-02 15:04:05 - Download completed! "), "Time elapsed:", elapsed,
-	 "Average download speed:", math.Round(AvgDown*10)/10, "MB/s")
-
-	// fmt.Println(url_split, url_httpstatus, url_webaddress, url_directory, url_filename)
-
-	// DownloadFile(url_directory+"/"+url_filename, url)
-
+		"Average download speed:", math.Round(AvgDown*10)/10, "MB/s", "'"+url_split[4]+"' saved",
+		"["+string(SizeInt)+"/"+string(SizeInt)+"]")
 }
 
 // Write the response of the GET request to file
@@ -63,7 +57,7 @@ func writeToFile(fileName string, resp *http.Response, url_split []string) (elap
 
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	errorChecker(err)
-	bar := progressbar.DefaultBytes( 
+	bar := progressbar.DefaultBytes(
 		resp.ContentLength,
 		"Downloading: "+url_split[4],
 	)
