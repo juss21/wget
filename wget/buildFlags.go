@@ -23,7 +23,7 @@ func BuildFlags() {
 	//boolean flags
 	flag.BoolVar(&Flags.H_Flag, "h", false, "Helpful information for the user")
 	flag.BoolVar(&Flags.Mirror_Flag, "mirror", false, "Mirror flag for cloning the webpage")
-	flag.BoolVar(&Flags.B_Flag, "b", false, "Logging process to wget-log")
+	flag.BoolVar(&Flags.B_Flag, "B", false, "Logging process to wget-log")
 	//string flags
 	flag.StringVar(&Flags.O_Flag, "O", "", "Flag for output filename")
 	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "Maximum download speed for downloads")

@@ -46,7 +46,7 @@ func Run() {
 			AvgDown = float64(size) / (h.Seconds()) / 1000000
 		}
 		DownloadedDataInt := strconv.FormatInt(DownloadedData, 10)
-		
+
 		doLogging(time.Now().Format("2006-01-02 15:04:05 - Download completed! "), false)
 		doLogging("["+string(DownloadedDataInt)+"/"+FileSizeString+"]", true)
 		doLogging("Time elapsed: ", false)
@@ -100,18 +100,23 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 	createPath("downloads/" + directory)
 	file, err := os.OpenFile("downloads/"+directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0777)
 	errorChecker(err)
-
+	//var bar progressbar.ProgressBar
 	start := time.Now()
 	defer file.Close()
 
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	errorChecker(err)
-	bar := progressbar.DefaultBytes(
-		resp.ContentLength,
-		"Downloading: "+fileName,
-	)
-	data, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
-	errorChecker(err)
+	if Flags.B_Flag {
+		data, err = io.Copy(bufferedWriter, resp.Body)
+		errorChecker(err)
+	} else {
+		bar := progressbar.DefaultBytes(
+			resp.ContentLength,
+			"Downloading: "+fileName,
+		)
+		data, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
+		errorChecker(err)
+	}
 	t := time.Now()
 	elapsed = t.Sub(start)
 
