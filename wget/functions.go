@@ -47,7 +47,7 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 }
 
 // Make the GET request to a url, return the response
-func getResponse(link, httpmethod, shorturl string) *http.Response {
+func getResponse(link, httpmethod, shorturl, fileName string) *http.Response {
 	net.LookupPort("tcp", httpmethod)
 
 	u, err := url.Parse(link)
@@ -68,19 +68,16 @@ func getResponse(link, httpmethod, shorturl string) *http.Response {
 	doLogging(httpmethod+"request sent, awaiting response... "+resp.Status, true)
 	if resp.StatusCode != 200 {
 		doLogging("Location: "+link+" [following]", true)
-		getResponse(link, httpmethod, shorturl)
+		getResponse(link, httpmethod, shorturl, fileName)
 	}
 
 	doLogging("", true)
-	tempFile := ""
-	if Flags.O_Flag != "" {
-		tempFile = Flags.O_Flag
-	}
 
-	size, filetype := FileInfo(resp, tempFile, link)
+	size, filetype := FileInfo(resp, fileName, link)
 	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
-	doLogging("Saving to:"+tempFile, true)
+	
+	doLogging("Saving to:"+fileName, true)
 	doLogging("", true)
 	return resp
 }

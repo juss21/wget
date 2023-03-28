@@ -34,7 +34,7 @@ func Run() {
 		if Flags.O_Flag != "" {
 			tempFile = Flags.O_Flag
 		}
-		response := getResponse(url, httpmethod, shorturl)
+		response := getResponse(url, httpmethod, shorturl, tempFile)
 		size, _ := FileInfo(response, tempFile, url)
 		elapsed := writeToFile(givenpath, tempFile, response)
 		h, _ := time.ParseDuration(elapsed.String())
