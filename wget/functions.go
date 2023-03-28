@@ -2,9 +2,11 @@ package wget
 
 import (
 	"fmt"
-	"strconv"
-	//"io/ioutil"
 	"net"
+	"strconv"
+
+	//"io/ioutil"
+
 	"net/http"
 	"net/url"
 	"os"
@@ -15,40 +17,67 @@ import (
 // Check if we received an error on our last function call
 func errorChecker(err error) {
 	if err != nil {
-		fmt.Println(err)
+		doLogging(err.Error(), true)
 		os.Exit(0)
 	}
 }
 
-// Make the GET request to a url, return the response
-func getResponse(urls string, url_split []string) *http.Response{
-	add, err := net.LookupIP(url_split[2])
+// Read data from url
+func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod string) {
+	var rebuilt []string
+	fmt.Println(url)
+	split := strings.Split(url, "/")
 
-	net.LookupPort("tcp", "https")
-
-	u, err := url.Parse(urls)
-	Port := GetPort(u.Scheme)
-
-	fmt.Println("Resolving", url_split[2], "("+url_split[2]+")...", add[0], add[1])
-	tr := new(http.Transport)
-	fmt.Print("Connecting ", url_split[2], " ("+url_split[2]+")|", add[0], "|:"+Port+"...")
-
-	client := &http.Client{Transport: tr}
-	resp, err := client.Get(urls)
-	errorChecker(err)
-	fmt.Println(" connected.")
-	fmt.Print("HTTP request sent, awaiting response... ", resp.Status)
-	if resp.StatusCode != 200 {
-		fmt.Println("Location:", urls, "[following]")
-		getResponse(urls, url_split)
+	for i := 0; i < len(split); i++ {
+		if split[i] != "" {
+			rebuilt = append(rebuilt, split[i])
+		}
 	}
 
+	rurl = url
+	cleanurl = rebuilt[1]
+	givenfilename = rebuilt[2]
+	if len(split) != 4 {
+		givenpath = rebuilt[2]
+		givenfilename = rebuilt[3]
+	}
+	httpmethod = rebuilt[0]
+
+	return rurl, cleanurl, givenfilename, givenpath, httpmethod
+}
+
+// Make the GET request to a url, return the response
+func getResponse(link, httpmethod, shorturl string) *http.Response {
+	net.LookupPort("tcp", httpmethod)
+
+	u, err := url.Parse(link)
+	Port := GetPort(u.Scheme)
+
+	doLogging("Resolving "+shorturl+" ("+shorturl+")... "+httpmethod+" "+shorturl, true)
+	tr := new(http.Transport)
+	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+httpmethod+"|:"+Port+"...", false)
+
+	client := &http.Client{Transport: tr}
+	resp, err := client.Get(link)
 	errorChecker(err)
-	fmt.Println()
-	size, filetype := FileInfo(url_split[4], urls)
-	fmt.Println("Length:", size, CalcSize(size), "["+filetype+"]")
-	fmt.Println("Saving to:", url_split[4])
-	fmt.Println()
+	doLogging(" connected.", true)
+	doLogging("HTTP request sent, awaiting response... "+resp.Status, true)
+	if resp.StatusCode != 200 {
+		doLogging("Location: "+link+" [following]", true)
+		getResponse(link, httpmethod, shorturl)
+	}
+
+	doLogging("", true)
+	tempFile := ""
+	if Flags.O_Flag != "" {
+		tempFile = Flags.O_Flag
+	}
+
+	size, filetype := FileInfo(tempFile, link)
+	a := strconv.FormatInt(size, 16)
+	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
+	doLogging("Saving to:"+tempFile, true)
+	doLogging("", true)
 	return resp
 }
 
@@ -86,15 +115,12 @@ func CalcSize(numb int64) string {
 func FileInfo(FileName, url string) (size int64, FileType string) {
 	tr := new(http.Transport)
 	client := &http.Client{Transport: tr}
-
 	resp, err := client.Get(url)
 	errorChecker(err)
 	size = resp.ContentLength
-
 	buf := make([]byte, 512)
 	_, err2 := resp.Body.Read(buf)
 	errorChecker(err2)
 	contentType := http.DetectContentType(buf)
-
 	return size, contentType
 }
