@@ -1,17 +1,12 @@
 package wget
 
 import (
-	//"fmt"
 	"net"
 	"strconv"
-
-	//"io/ioutil"
-
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-	//"os/exec"
 )
 
 // Check if we received an error on our last function call
@@ -55,8 +50,12 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 	u, err := url.Parse(link)
 	errorChecker(err)
 	Port := GetPort(u.Scheme)
+	if len(ip) > 1 {
+		doLogging("Resolving "+shorturl+" ("+shorturl+")... "+(ip[0]).String()+", "+(ip[1]).String(), true)
 
-	doLogging("Resolving "+shorturl+" ("+shorturl+")... "+(ip[0]).String()+ ", "+(ip[1]).String(), true)
+	} else {
+		doLogging("Resolving "+shorturl+" ("+shorturl+")... "+(ip[0]).String(), true)
+	}
 	//tr := new(http.Transport)
 	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+(ip[0]).String()+"|:"+Port+"...", false)
 
@@ -81,7 +80,7 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
 
-	doLogging("Saving to: "+fileName, true)
+	doLogging("Saving to file: "+fileName, true)
 	doLogging("", true)
 	return resp, a
 }

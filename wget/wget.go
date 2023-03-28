@@ -26,14 +26,12 @@ func Run() {
 	// looping all the links saved in Flags
 	for l := 0; l < len(Flags.Links); l++ {
 		url, shorturl, givenfilename, givenpath, httpmethod := sliceUrl(Flags.Links[l])
+		if Flags.B_Flag {
+			os.Truncate("wget-log", 0)
+			fmt.Println("Output will be written to \"wget-log\".")
+		}
 
 		download_started := time.Now().Format("--2006-01-02 15:04:05--")
-		if Flags.B_Flag {
-			fmt.Println("Output will be written to \"wget-log\".")
-			f, err := os.Create("wget-log")
-			errorChecker(err)
-			defer f.Close()
-		}
 		doLogging(download_started, false)
 		doLogging("\t"+url, true)
 		tempFile := givenfilename
@@ -61,7 +59,7 @@ func Run() {
 		math := math.Round(AvgDown*10) / 10
 		conv := strconv.FormatFloat(math, 'f', -1, 64)
 		doLogging(conv, false)
-		doLogging(" MB/s"+"\nFile: '"+path+tempFile+"'", true)
+		doLogging(" MB/s"+"\nFile location: '"+path+tempFile+"'", true)
 
 	}
 
@@ -88,6 +86,8 @@ func doLogging(input string, newline bool) {
 		if err != nil {
 			panic(err)
 		}
+		//os.Truncate("wget-log", 0)
+
 
 		defer f.Close()
 
