@@ -74,7 +74,7 @@ func getResponse(link, httpmethod, shorturl string) *http.Response {
 	}
 
 	size, filetype := FileInfo(tempFile, link)
-	a := strconv.FormatInt(size, 16)
+	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
 	doLogging("Saving to:"+tempFile, true)
 	doLogging("", true)

@@ -52,7 +52,7 @@ func Run() {
 		doLogging(shortDur(elapsed), false)
 		doLogging(" Average download speed: ", false)
 		math := math.Round(AvgDown*10) / 10
-		conv := strconv.FormatFloat(math, 'E', -1, 64)
+		conv := strconv.FormatFloat(math, 'f', -1, 64)
 		doLogging(conv, false)
 		doLogging(" MB/s"+"\nFile: '"+path+tempFile+"'", true)
 
