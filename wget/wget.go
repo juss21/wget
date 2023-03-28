@@ -20,16 +20,18 @@ const (
 	bufSize = 1024 * 8
 )
 
+var WgetLogNum int
+
 var path = createPath("downloads/")
 
 func Run() {
+	if Flags.B_Flag {
+		os.Truncate("wget-log", 0)
+		fmt.Println("Output will be written to \"wget-log\".")
+	}
 	// looping all the links saved in Flags
 	for l := 0; l < len(Flags.Links); l++ {
 		url, shorturl, givenfilename, givenpath, httpmethod := sliceUrl(Flags.Links[l])
-		if Flags.B_Flag {
-			os.Truncate("wget-log", 0)
-			fmt.Println("Output will be written to \"wget-log\".")
-		}
 
 		download_started := time.Now().Format("--2006-01-02 15:04:05--")
 		doLogging(download_started, false)
@@ -82,23 +84,29 @@ func doLogging(input string, newline bool) {
 			fmt.Print(input)
 		}
 	} else {
-		f, err := os.OpenFile("wget-log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-		if err != nil {
-			panic(err)
-		}
-		//os.Truncate("wget-log", 0)
 
+		f, _ := os.OpenFile("wget-log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
 		defer f.Close()
 
-		if _, err = f.WriteString(input); err != nil {
+		if _, err := f.WriteString(input); err != nil {
 			panic(err)
 		}
 		if newline {
 			f.WriteString("\n")
 		}
-
+		WgetLogNum++
 	}
+}
+func FileExists(filepath string) bool {
+
+	fileinfo, err := os.Stat(filepath)
+
+	if os.IsNotExist(err) {
+		return false
+	}
+	// Return false if the fileinfo says the file path is a directory.
+	return !fileinfo.IsDir()
 }
 
 // check if path exists, if not create
