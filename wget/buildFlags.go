@@ -16,6 +16,7 @@ type WgetFlags struct {
 	I_Flag         string   // flag for downloading multiple files "./wget -i=downloads.txt"
 	B_Flag         bool     // flag for logging output instead printing it out
 	X_Flag         string   // flag for excluding files (ex. skipping/cutting out the /img folder --mirror https://trypap.com/)
+	P_Flag         string   // flag for download path
 	Links          []string // links
 }
 
@@ -29,6 +30,8 @@ func BuildFlags() {
 	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "Maximum download speed for downloads")
 	flag.StringVar(&Flags.I_Flag, "i", "", "Downloading multiple files from file")
 	flag.StringVar(&Flags.X_Flag, "x", "", "Exclude files from being downloaded")
+	flag.StringVar(&Flags.P_Flag, "P", "", "flag for download path")
+
 	flag.Parse() // parsing built flags to flags variable
 
 	//links flag
