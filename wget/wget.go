@@ -34,20 +34,21 @@ func Run() {
 		if Flags.O_Flag != "" {
 			tempFile = Flags.O_Flag
 		}
-		response := getResponse(url, httpmethod, shorturl, tempFile)
-		size, _ := FileInfo(response, tempFile, url)
-		elapsed := writeToFile(givenpath, tempFile, response)
+		response, FileSizeString := getResponse(url, httpmethod, shorturl, tempFile)
+		//size, _ := FileInfo(tempFile, url)
+		elapsed, DownloadedData := writeToFile(givenpath, tempFile, response)
 		h, _ := time.ParseDuration(elapsed.String())
+		size, _ := strconv.Atoi(FileSizeString)
 		var AvgDown float64
 		if h.Seconds() < 1 {
 			AvgDown = float64(size) * (h.Seconds()) / 10
 		} else {
 			AvgDown = float64(size) / (h.Seconds()) / 1000000
 		}
-		SizeInt := strconv.FormatInt(size, 10)
-
+		DownloadedDataInt := strconv.FormatInt(DownloadedData, 10)
+		
 		doLogging(time.Now().Format("2006-01-02 15:04:05 - Download completed! "), false)
-		doLogging("["+string(SizeInt)+"/"+string(SizeInt)+"]", true)
+		doLogging("["+string(DownloadedDataInt)+"/"+FileSizeString+"]", true)
 		doLogging("Time elapsed: ", false)
 		doLogging(shortDur(elapsed), false)
 		doLogging(" Average download speed: ", false)
@@ -95,7 +96,7 @@ func createPath(path string) string {
 }
 
 // Write the response of the GET request to file
-func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.Duration) {
+func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.Duration, data int64) {
 	createPath("downloads/" + directory)
 	file, err := os.OpenFile("downloads/"+directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0777)
 	errorChecker(err)
@@ -109,10 +110,10 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 		resp.ContentLength,
 		"Downloading: "+fileName,
 	)
-	_, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
+	data, err = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
 	errorChecker(err)
 	t := time.Now()
 	elapsed = t.Sub(start)
 
-	return elapsed
+	return elapsed, data
 }
