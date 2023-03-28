@@ -58,10 +58,14 @@ func getResponse(link, httpmethod, shorturl string) *http.Response {
 	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+httpmethod+"|:"+Port+"...", false)
 
 	client := &http.Client{Transport: tr}
-	resp, err := client.Get(link)
+	req, err := http.NewRequest("GET", link, nil)
+	req.Header.Add("Accept", `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`)
+	req.Header.Add("User-Agent", `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11`)
+	resp, err := client.Do(req)
+	//resp, err := client.Get(link)
 	errorChecker(err)
 	doLogging(" connected.", true)
-	doLogging("HTTP request sent, awaiting response... "+resp.Status, true)
+	doLogging(httpmethod+"request sent, awaiting response... "+resp.Status, true)
 	if resp.StatusCode != 200 {
 		doLogging("Location: "+link+" [following]", true)
 		getResponse(link, httpmethod, shorturl)
@@ -73,7 +77,7 @@ func getResponse(link, httpmethod, shorturl string) *http.Response {
 		tempFile = Flags.O_Flag
 	}
 
-	size, filetype := FileInfo(tempFile, link)
+	size, filetype := FileInfo(resp, tempFile, link)
 	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
 	doLogging("Saving to:"+tempFile, true)
@@ -97,8 +101,8 @@ func CalcSize(numb int64) string {
 	var output string
 
 	numstr := strconv.FormatInt(numb, 10)
-	num, _ := strconv.Atoi(numstr)
-
+	num, err := strconv.Atoi(numstr)
+	errorChecker(err)
 	if num < 1024 {
 		output = "(" + strconv.Itoa(num) + "B)"
 	} else if num >= 1024 && num < 1048576 {
@@ -112,15 +116,20 @@ func CalcSize(numb int64) string {
 	return output
 }
 
-func FileInfo(FileName, url string) (size int64, FileType string) {
-	tr := new(http.Transport)
-	client := &http.Client{Transport: tr}
-	resp, err := client.Get(url)
-	errorChecker(err)
+func FileInfo(resp *http.Response,FileName, url string) (size int64, FileType string) {
+
 	size = resp.ContentLength
+
 	buf := make([]byte, 512)
+
+	var contentType string
 	_, err2 := resp.Body.Read(buf)
-	errorChecker(err2)
-	contentType := http.DetectContentType(buf)
+	if err2 != nil {
+		contentType = "Couldn't read file"
+		goto exit
+	}
+
+	contentType = http.DetectContentType(buf)
+exit:
 	return size, contentType
 }

@@ -35,7 +35,7 @@ func Run() {
 			tempFile = Flags.O_Flag
 		}
 		response := getResponse(url, httpmethod, shorturl)
-		size, _ := FileInfo(tempFile, url)
+		size, _ := FileInfo(response, tempFile, url)
 		elapsed := writeToFile(givenpath, tempFile, response)
 		h, _ := time.ParseDuration(elapsed.String())
 		var AvgDown float64
