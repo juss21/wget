@@ -1,0 +1,11 @@
+--2023-03-28 19:23:01--	https://pbs.twimg.com/media/EMtmPFLWkAA8CIS.jpg
+Resolving pbs.twimg.com (pbs.twimg.com)... 93.184.220.70, 2606:2800:134:1a0d:1429:742:782:b6
+Connecting pbs.twimg.com (pbs.twimg.com)|93.184.220.70|:443... connected.
+https:request sent, awaiting response... 200 OK
+
+Length:56370(55K)[image/jpeg]
+Saving to: EMtmPFLWkAA8CIS.jpg
+
+2023-03-28 19:23:01 - Download completed! [56370/56370]
+Time elapsed: 71.276µs Average download speed: 0.4 MB/s
+File: 'downloads/EMtmPFLWkAA8CIS.jpg'

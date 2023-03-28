@@ -28,6 +28,12 @@ func Run() {
 		url, shorturl, givenfilename, givenpath, httpmethod := sliceUrl(Flags.Links[l])
 
 		download_started := time.Now().Format("--2006-01-02 15:04:05--")
+		if Flags.B_Flag {
+			fmt.Println("Output will be written to \"wget-log\".")
+			f, err := os.Create("wget-log")
+			errorChecker(err)
+			defer f.Close()
+		}
 		doLogging(download_started, false)
 		doLogging("\t"+url, true)
 		tempFile := givenfilename
@@ -78,7 +84,20 @@ func doLogging(input string, newline bool) {
 			fmt.Print(input)
 		}
 	} else {
-		// wget logging
+		f, err := os.OpenFile("wget-log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+
+		if _, err = f.WriteString(input); err != nil {
+			panic(err)
+		}
+		if newline {
+			f.WriteString("\n")
+		}
+
 	}
 }
 
