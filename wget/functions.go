@@ -1,7 +1,7 @@
 package wget
 
 import (
-	"fmt"
+	//"fmt"
 	"net"
 	"strconv"
 
@@ -25,7 +25,7 @@ func errorChecker(err error) {
 // Read data from url
 func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod string) {
 	var rebuilt []string
-	fmt.Println(url)
+	//fmt.Println(url)
 	split := strings.Split(url, "/")
 
 	for i := 0; i < len(split); i++ {
@@ -49,14 +49,16 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 // Make the GET request to a url, return the response
 func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, string) {
 	net.LookupPort("tcp", httpmethod)
+	ip, errx := net.LookupIP(shorturl)
+	errorChecker(errx)
 
 	u, err := url.Parse(link)
 	errorChecker(err)
 	Port := GetPort(u.Scheme)
 
-	doLogging("Resolving "+shorturl+" ("+shorturl+")... "+httpmethod+" "+shorturl, true)
+	doLogging("Resolving "+shorturl+" ("+shorturl+")... "+(ip[0]).String()+ ", "+(ip[1]).String(), true)
 	//tr := new(http.Transport)
-	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+httpmethod+"|:"+Port+"...", false)
+	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+(ip[0]).String()+"|:"+Port+"...", false)
 
 	//client := &http.Client{Transport: tr}
 	req, err2 := http.NewRequest("GET", link, nil)
@@ -78,7 +80,7 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 	size, filetype := FileInfo(fileName, link)
 	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
-	
+
 	doLogging("Saving to: "+fileName, true)
 	doLogging("", true)
 	return resp, a
