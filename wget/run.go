@@ -19,7 +19,6 @@ func Run() {
 		os.Truncate("wget-log", 0)
 		fmt.Println("Output will be written to \"wget-log\".")
 	}
-	//https://01.kood.tech/git/avatars/2beb3222eb81f2813c363302c532a8cb?
 	// looping all the links saved in Flags
 	for i, file := range Flags.Links {
 		wg.Add(1)
@@ -49,16 +48,7 @@ func Run() {
 
 }
 
-func startMirroring(url, givenpath, httpmethod string) {
-	/*
-		mirror main here
-	*/
-	response := mirrorResponse(url)
 
-	fmt.Println(response)
-
-	wg.Done()
-}
 
 func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 

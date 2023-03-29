@@ -2,7 +2,9 @@ package wget
 
 import (
 	"bufio"
+	"bytes"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -136,4 +138,29 @@ func FileInfo(FileName, url string) (size int64, FileType string) {
 	}
 	contentType = http.DetectContentType(buf)
 	return size, contentType
+}
+
+func startMirroring(url, givenpath, httpmethod string) {
+	/*
+		mirror main here
+	*/
+	surl := strings.Split(url, "/")
+
+	response := mirrorResponse(url)
+	createPath(surl[2])
+	file, erro := os.OpenFile(surl[2]+"/index.html", os.O_CREATE|os.O_WRONLY, 0777)
+	errorHandler(erro, true)
+
+	bufferedWriter := bufio.NewWriterSize(file, bufSize)
+	CopyThat, err1 := ioutil.ReadAll(response.Body)
+	errorHandler(err1, true)
+	bar := progressbar.DefaultBytes(
+		bytes.NewReader(CopyThat).Size(),
+		"Downloading: "+url,
+	)
+	file.Write(CopyThat)
+	_, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), io.NopCloser(bytes.NewReader(CopyThat)))
+	response.Body.Close()
+
+	wg.Done()
 }

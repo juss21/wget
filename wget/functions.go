@@ -142,10 +142,13 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 
 	rurl = url
 	cleanurl = rebuilt[1]
-	givenfilename = rebuilt[2]
-	if len(split) != 4 {
-		givenpath = "downloads/"+rebuilt[2]
-		givenfilename = rebuilt[3]
+	if len(split) > 4 {
+		givenfilename = rebuilt[2]
+
+		if len(split) != 4 {
+			givenpath = "downloads/" + rebuilt[2]
+			givenfilename = rebuilt[3]
+		}
 	} else {
 		givenpath = "downloads/"
 	}
