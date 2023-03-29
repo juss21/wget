@@ -8,7 +8,7 @@
 - Downloading multiple files at the same time, by reading a file containing multiple donwload links asynchronously
 - Main feature to download an entire website, [mirroring a website](https://en.wikipedia.org/wiki/Mirror_site)
 
-## How to use
+## Usage
 Build the project
 ```
 go build .
