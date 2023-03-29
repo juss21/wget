@@ -5,6 +5,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -18,7 +19,7 @@ func Run() {
 		os.Truncate("wget-log", 0)
 		fmt.Println("Output will be written to \"wget-log\".")
 	}
-
+	//https://01.kood.tech/git/avatars/2beb3222eb81f2813c363302c532a8cb?
 	// looping all the links saved in Flags
 	for i, file := range Flags.Links {
 		wg.Add(1)
@@ -61,14 +62,17 @@ func startMirroring(url, givenpath, httpmethod string) {
 
 func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 
-	response, filesize := getResponse(url, httpMethod, shorturl, filename)
-	elapsed, data := writeToFile(givenpath+"/", filename, response)
+	response, filesize, FileNameFromResp := getResponse(url, httpMethod, shorturl, filename, givenpath)
+	filename = FileNameFromResp
+	elapsed, data := writeToFile(givenpath, filename, response)
 
 	h, _ := time.ParseDuration(elapsed.String())
 	size, _ := strconv.Atoi(filesize)
 	var AvgDown float64
-	if h.Seconds() < 1 {
-		AvgDown = float64(size) * (h.Seconds()) / 10
+	if h.Milliseconds() > 1 && h.Seconds() < 1 {
+		AvgDown = float64(size) * (h.Seconds()) / 100000
+	} else if h.Seconds() < 1 {
+		AvgDown = float64(size) / (h.Seconds()) / 100000000
 	} else {
 		AvgDown = float64(size) / (h.Seconds()) / 1000000
 	}
@@ -82,7 +86,10 @@ func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 	math := math.Round(AvgDown*10) / 10
 	conv := strconv.FormatFloat(math, 'f', -1, 64)
 	doLogging(conv, false)
-	doLogging(" MB/s"+"\nFile location: '"+givenpath+"/"+filename+"'", true)
+	if !strings.HasSuffix(givenpath, "/") {
+		givenpath += "/"
+	}
+	doLogging(" MB/s"+"\nFile location: '"+givenpath+filename+"'", true)
 
 	wg.Done()
 }

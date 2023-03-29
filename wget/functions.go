@@ -25,7 +25,7 @@ func Folder(path string) string {
 		err := os.MkdirAll(path, 0755)
 		errorHandler(err, true)
 	} else {
-		path = "Downloads/" + path
+		path = "downloads/" + path
 		err := os.MkdirAll(path, 0755)
 		errorHandler(err, true)
 	}
@@ -144,8 +144,10 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 	cleanurl = rebuilt[1]
 	givenfilename = rebuilt[2]
 	if len(split) != 4 {
-		givenpath = rebuilt[2]
+		givenpath = "downloads/"+rebuilt[2]
 		givenfilename = rebuilt[3]
+	} else {
+		givenpath = "downloads/"
 	}
 	httpmethod = rebuilt[0]
 

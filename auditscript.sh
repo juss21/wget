@@ -10,13 +10,14 @@ read "Press enter to continue"
 
 echo 'Try to run the following command with a link at your choice "./wget <https://link_of_your_choice.com>"'
 echo ""
-go run . https://01.kood.tech/git/avatars/2beb3222eb81f2813c363302c532a8cb?size=84
+go run . https://01.kood.tech/git/avatars/565c6475af5a57a5ef5202227c288f5f?
 echo 'Did the program download the expected file?'
 echo "Press enter to continue"
 read "Press enter to continue"
 
 echo 'Try to run the following command "./wget https://golang.org/dl/go1.16.3.linux-amd64.tar.gz"'
 go run . https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
+echo
 echo 'Did the program download the file "go1.16.3.linux-amd64.tar.gz"?'
 echo 'Did the program displayed the start time?'
 echo 'Did the start time and the end time respected the format? (yyyy-mm-dd hh:mm:ss)'
@@ -29,6 +30,7 @@ read "Press enter to continue"
 
 echo 'Try to download a big file, for example: "./wget http://ipv4.download.thinkbroadband.com/100MB.zip"'
 go run . http://ipv4.download.thinkbroadband.com/100MB.zip
+echo
 echo 'Did the program download the expected file?'
 echo 'While downloading, did the progress bar show the amount that is being downloaded? (KiB or MiB)'
 echo 'While downloading, did the progress bar show the percentage that is being downloaded?'
@@ -69,6 +71,7 @@ read "Press enter to continue"
 
 echo 'Try to create a text file with the name "downloads.txt" and save into it the links below. Then run the command "./wget -i=downloads.txt"'
 go run . -i=downloads.txt
+echo
 echo 'Did the program download all the files from the downloads.txt file? (EMtmPFLWkAA8CIS.jpg, 20MB.zip, 10MB.zip)'
 echo 'Did the downloads occurred in an asynchronous way? (tip: look to the download order)'
 echo "Press enter to continue"
@@ -76,6 +79,7 @@ read "Press enter to continue"
 
 echo 'Try to run the following command, "./wget -B http://ipv4.download.thinkbroadband.com/20MB.zip"'
 go run . -B http://ipv4.download.thinkbroadband.com/20MB.zip
+echo
 echo 'Output will be written to ‘wget-log’.'
 echo 'Did the program output the statement above?'
 echo 'Was the download made in "silence" (without displaying anything to the terminal)?'

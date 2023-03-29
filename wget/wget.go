@@ -16,7 +16,7 @@ import (
 )
 
 // Make the GET request to a url, return the response
-func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, string) {
+func getResponse(link, httpmethod, shorturl, fileName, givenpath string) (*http.Response, string, string) {
 	net.LookupPort("tcp", httpmethod)
 	ip, errx := net.LookupIP(shorturl)
 	errorHandler(errx, true)
@@ -34,6 +34,11 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 
 	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+ip[0].String()+"|:"+Port+"...", false)
 
+	size, filetype := FileInfo(fileName, link)
+	if !strings.Contains(fileName, ".") {
+		Type := strings.Split(filetype, "/")
+		fileName += "." + strings.TrimSuffix(Type[1], "]")
+	}
 	//client
 	req, err := http.NewRequest("GET", link, nil)
 	errorHandler(err, true)
@@ -46,19 +51,18 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 	doLogging(httpmethod+"request sent, awaiting response... "+resp.Status, true)
 	if resp.StatusCode != 200 {
 		doLogging("Location: "+link+" [following]", true)
-		getResponse(link, httpmethod, shorturl, fileName)
+		getResponse(link, httpmethod, shorturl, fileName, givenpath)
 	}
 
 	doLogging("", true)
 
-	size, filetype := FileInfo(fileName, link)
 	a := strconv.FormatInt(size, 10)
 	doLogging("Length:"+a+CalcSize(size)+"["+filetype+"]", true)
 
 	doLogging("Saving to file: "+fileName, true)
 	doLogging("", true)
 
-	return resp, a
+	return resp, a, fileName
 }
 
 // Write the response of the GET request to file
@@ -66,8 +70,12 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 	var file *os.File
 	if Flags.P_Flag == "" {
 		createPath("downloads/")
-		createPath("downloads/" + directory)
-		fileo, erro := os.OpenFile("downloads/"+directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		if strings.HasPrefix(directory, "downloads/") {
+			createPath(directory)
+		} else {
+			createPath("downloads/" + directory)
+		}
+		fileo, erro := os.OpenFile(directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0777)
 		errorHandler(erro, false)
 		file = fileo
 	} else {
@@ -77,7 +85,6 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 		file = fileo
 	}
 
-	//var bar progressbar.ProgressBar
 	start := time.Now()
 	defer file.Close()
 
@@ -127,7 +134,6 @@ func FileInfo(FileName, url string) (size int64, FileType string) {
 		contentType = "Couldn't read file"
 		return size, contentType
 	}
-
 	contentType = http.DetectContentType(buf)
 	return size, contentType
 }
