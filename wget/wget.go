@@ -151,15 +151,16 @@ func startMirroring(url, givenpath, httpmethod string) {
 	file, erro := os.OpenFile(surl[2]+"/index.html", os.O_CREATE|os.O_WRONLY, 0777)
 	errorHandler(erro, true)
 
-	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	CopyThat, err1 := ioutil.ReadAll(response.Body)
 	errorHandler(err1, true)
+
 	bar := progressbar.DefaultBytes(
 		bytes.NewReader(CopyThat).Size(),
 		"Downloading: "+url,
 	)
-	file.Write(CopyThat)
-	_, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), io.NopCloser(bytes.NewReader(CopyThat)))
+	
+	w := io.MultiWriter(file, bar)
+	w.Write(CopyThat)
 	response.Body.Close()
 
 	wg.Done()
