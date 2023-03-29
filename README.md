@@ -10,15 +10,20 @@
 
 ## How to use
 Build the project
->```go build .```
->```./wget <url>```
+```
+go build .
+./wget <url>
+```
 
 Run by hand
->``` go run . <url>```
+```
+go run . <url>
+```
 
 Project help
->```go run . -h ```
->```./wget -h```
+```go run . -h 
+./wget -h
+```
 
 **Authors:**
 * Joel Meeks (kasepuu)
