@@ -131,7 +131,7 @@ func ConvertLimit(base string) int {
 // Read data from url
 func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod string) {
 	var rebuilt []string
-	//fmt.Println(url)
+
 	split := strings.Split(url, "/")
 
 	for i := 0; i < len(split); i++ {

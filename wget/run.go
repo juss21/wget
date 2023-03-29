@@ -33,6 +33,9 @@ func Run() {
 
 		url, shorturl, givenfilename, givenpath, httpmethod := sliceUrl(file)
 		tempFile := givenfilename
+		if Flags.P_Flag != "" {
+			givenpath = Folder(Flags.P_Flag)
+		}
 		if Flags.O_Flag != "" {
 			tempFile = Flags.O_Flag
 		}
@@ -50,12 +53,8 @@ func Run() {
 
 func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 
-	if Flags.P_Flag != "" {
-		givenpath = Folder(Flags.P_Flag)
-	}
-
 	response, filesize := getResponse(url, httpMethod, shorturl, filename)
-	elapsed, data := writeToFile(givenpath, filename, response)
+	elapsed, data := writeToFile(givenpath+"/", filename, response)
 
 	h, _ := time.ParseDuration(elapsed.String())
 	size, _ := strconv.Atoi(filesize)
@@ -86,8 +85,8 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 	ip, errx := net.LookupIP(shorturl)
 	errorHandler(errx, true)
 
-	u, err := url.Parse(link)
-	errorHandler(err, true)
+	u, erro := url.Parse(link)
+	errorHandler(erro, true)
 	Port := GetPortFromHttpMethod(u.Scheme)
 
 	// resolving
@@ -130,14 +129,17 @@ func getResponse(link, httpmethod, shorturl, fileName string) (*http.Response, s
 func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.Duration, data int64) {
 	var file *os.File
 	if Flags.P_Flag == "" {
+		createPath("downloads/")
 		createPath("downloads/" + directory)
-		file, _ = os.OpenFile("downloads/"+directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		fileo, erro := os.OpenFile("downloads/"+directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		errorHandler(erro, false)
+		file = fileo
 	} else {
 		createPath(directory)
-		file, _ = os.OpenFile(directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		fileo, erro := os.OpenFile(directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		errorHandler(erro, false)
+		file = fileo
 	}
-	createPath("downloads/")
-	createPath("downloads/" + directory)
 
 	//var bar progressbar.ProgressBar
 	start := time.Now()
