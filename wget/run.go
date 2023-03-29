@@ -42,8 +42,6 @@ func Run() {
 			links, images := GetLinksFromTemp(file, content)
 			
 			NewLinks := AppendLinks(links, images, url)
-			fmt.Println(NewLinks)
-			//Flags.Links = NewLinks
 			DownloadLinks(NewLinks, httpmethod)
 		}
 		if i >= 2 {

@@ -88,10 +88,13 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	response := mirrorResponse(url)
 	createPath("downloads/")
 	createPath("downloads/" + surl[2])
-	createPath("downloads/" + surl[2] + "/" + FilenameSlice[0] + "/")
-	for i := 0; i < len(FilenameSlice); i++ {
-		createPath("downloads/" + surl[2] + "/" + strings.Join(FilenameSlice[:i], "/"))
+	if len(FilenameSlice) > 0 {
+		createPath("downloads/" + surl[2] + "/" + FilenameSlice[0] + "/")
+		for i := 0; i < len(FilenameSlice); i++ {
+			createPath("downloads/" + surl[2] + "/" + strings.Join(FilenameSlice[:i], "/"))
+		}
 	}
+
 
 	var file *os.File
 	var erro error
