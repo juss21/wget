@@ -11,19 +11,19 @@
 ## Methods 
 You can try Building the project
 ```
-go build .
-./wget <url>
+~/j/go/gitea/wget> go build .
+~/j/go/gitea/wget> ./wget <url>
 ```
 
 You can try Running it by hand
 ```
-go run . <url>
+~/j/go/gitea/wget> go run . <url>
 ```
 
 Project help
 ```
-go run . -h 
-./wget -h
+~/j/go/gitea/wget> go run . -h 
+~/j/go/gitea/wget> ./wget -h
 ```
 
 **Authors:**
