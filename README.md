@@ -31,3 +31,6 @@ Project help
 * Juss Märtson (juss)
 * Rain-Ander Laagus (laagusra)
 * Aleksandr Lavronenko (alavrone)
+
+
+[Audit questions](https://github.com/01-edu/public/tree/master/subjects/wget/audit) 
