@@ -13,14 +13,17 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
+		/*
+			TODO:
+			X_flag
+			Mirror output info
+			vb veel midagi
+		*/
+
+
 func mirrorResponse(url string) *http.Response {
 
 	//client
-	/*req, err := http.NewRequest("GET", url, nil)
-	errorHandler(err, true)
-	resp, err3 := http.DefaultClient.Do(req)
-	errorHandler(err3, true)
-	return resp*/
 	req, err := http.NewRequest("GET", url, nil)
 	errorHandler(err, true)
 	req.Header.Add("Accept", `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`)
@@ -62,7 +65,7 @@ func DownloadLinks(Links []string, httpmethod string) {
 				break
 			}
 			filename += split_url[j] + "/"
-			
+
 		}
 		if Flags.P_Flag != "" {
 			path = Folder(Flags.P_Flag) + split_url[2]
@@ -85,11 +88,11 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	response := mirrorResponse(url)
 	createPath("downloads/")
 	createPath("downloads/" + surl[2])
-	createPath("downloads/" + surl[2] +"/" + FilenameSlice[0] + "/")
+	createPath("downloads/" + surl[2] + "/" + FilenameSlice[0] + "/")
 	for i := 0; i < len(FilenameSlice); i++ {
-		createPath("downloads/" + surl[2] +"/" + strings.Join(FilenameSlice[:i], "/"))
+		createPath("downloads/" + surl[2] + "/" + strings.Join(FilenameSlice[:i], "/"))
 	}
-	
+
 	var file *os.File
 	var erro error
 	if filename == "" {
