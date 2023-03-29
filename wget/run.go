@@ -70,9 +70,9 @@ func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 	size, _ := strconv.Atoi(filesize)
 	var AvgDown float64
 	if h.Milliseconds() > 1 && h.Seconds() < 1 {
-		AvgDown = float64(size) * (h.Seconds()) / 100000
+		AvgDown = float64(size) * (h.Seconds()) / 1000
 	} else if h.Seconds() < 1 {
-		AvgDown = float64(size) / (h.Seconds()) / 100000000
+		AvgDown = float64(size) / (h.Seconds()) / 10
 	} else {
 		AvgDown = float64(size) / (h.Seconds()) / 1000000
 	}
