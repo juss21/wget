@@ -2,9 +2,9 @@ package wget
 
 import (
 	"bufio"
-	"bytes"
+	//"bytes"
 	"io"
-	"io/ioutil"
+	//"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -77,12 +77,12 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 		} else {
 			createPath("downloads/" + directory)
 		}
-		fileo, erro := os.OpenFile(directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		fileo, erro := os.OpenFile(directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0o644)
 		errorHandler(erro, false)
 		file = fileo
 	} else {
 		createPath(directory)
-		fileo, erro := os.OpenFile(directory+fileName, os.O_CREATE|os.O_WRONLY, 0777)
+		fileo, erro := os.OpenFile(directory+fileName, os.O_CREATE|os.O_WRONLY, 0o644)
 		errorHandler(erro, false)
 		file = fileo
 	}
@@ -140,28 +140,4 @@ func FileInfo(FileName, url string) (size int64, FileType string) {
 	return size, contentType
 }
 
-func startMirroring(url, givenpath, httpmethod string) {
-	/*
-		mirror main here
-	*/
-	surl := strings.Split(url, "/")
 
-	response := mirrorResponse(url)
-	createPath(surl[2])
-	file, erro := os.OpenFile(surl[2]+"/index.html", os.O_CREATE|os.O_WRONLY, 0777)
-	errorHandler(erro, true)
-
-	CopyThat, err1 := ioutil.ReadAll(response.Body)
-	errorHandler(err1, true)
-
-	bar := progressbar.DefaultBytes(
-		bytes.NewReader(CopyThat).Size(),
-		"Downloading: "+url,
-	)
-	
-	w := io.MultiWriter(file, bar)
-	w.Write(CopyThat)
-	response.Body.Close()
-
-	wg.Done()
-}

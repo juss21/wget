@@ -38,14 +38,19 @@ func Run() {
 		if !Flags.Mirror_Flag {
 			go startDownload(url, shorturl, tempFile, givenpath, httpmethod)
 		} else {
-			go startMirroring(url, givenpath, httpmethod)
+			file, content := startMirroring(url, httpmethod, "", "")
+			links, images := GetLinksFromTemp(file, content)
+			
+			NewLinks := AppendLinks(links, images, url)
+			fmt.Println(NewLinks)
+			//Flags.Links = NewLinks
+			DownloadLinks(NewLinks, httpmethod)
 		}
 		if i >= 2 {
 			break
 		}
 	}
 	wg.Wait()
-
 }
 
 
@@ -62,7 +67,7 @@ func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 	if h.Milliseconds() > 1 && h.Seconds() < 1 {
 		AvgDown = float64(size) * (h.Seconds()) / 1000
 	} else if h.Seconds() < 1 {
-		AvgDown = float64(size) / (h.Seconds()) / 10
+		AvgDown = float64(size) / (h.Seconds()) / 10000000
 	} else {
 		AvgDown = float64(size) / (h.Seconds()) / 1000000
 	}

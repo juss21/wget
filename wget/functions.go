@@ -82,9 +82,9 @@ func createPath(path string) string {
 
 // get port from httpmethod
 func GetPortFromHttpMethod(s string) (port string) {
-	if strings.ToLower(s) == "https" {
+	if strings.ToLower(s) == "https:" {
 		port = "443"
-	} else if strings.ToLower(s) == "http" {
+	} else if strings.ToLower(s) == "http:" {
 		port = "80"
 	} else if strings.ToLower(s) == "telnet" {
 		port = "23"
@@ -141,18 +141,36 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 	}
 
 	rurl = url
-	cleanurl = rebuilt[1]
-	if len(split) > 4 {
-		givenfilename = rebuilt[2]
 
-		if len(split) != 4 {
-			givenpath = "downloads/" + rebuilt[2]
-			givenfilename = rebuilt[3]
+	if len(split) > 4 {
+		givenpath = "downloads/" + rebuilt[2]
+		for j := len(split) - 1; j > 2; j-- {
+			if strings.Contains(split[j], ".") {
+				givenfilename = split[j]
+				break
+			}
 		}
 	} else {
 		givenpath = "downloads/"
 	}
+	cleanurl = rebuilt[1]
 	httpmethod = rebuilt[0]
 
 	return rurl, cleanurl, givenfilename, givenpath, httpmethod
+}
+
+func AppendLinks(links, images []string, baseurl string) (FinalLinks []string) {
+	for _, link := range links {
+		if !strings.HasPrefix(link, "http") {
+			FinalLinks = append(FinalLinks, baseurl+link)
+		}
+	}
+	for _, img := range images {
+		if !strings.HasPrefix(img, "http") {
+			FinalLinks = append(FinalLinks, baseurl+img)
+		} else {
+			FinalLinks = append(FinalLinks, img)
+		}
+	}
+	return
 }
