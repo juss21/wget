@@ -9,14 +9,14 @@
 - Main feature to download an entire website, [mirroring a website](https://en.wikipedia.org/wiki/Mirror_site)
 
 ## How to use
->Build the project
+Build the project
 >```go build .```
 >```./wget <url>```
 
->Run by hand
+Run by hand
 >``` go run . <url>```
 
->Project help
+Project help
 >```go run . -h ```
 >```./wget -h```
 
