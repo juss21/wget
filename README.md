@@ -21,7 +21,8 @@ go run . <url>
 ```
 
 Project help
-```go run . -h 
+```
+go run . -h 
 ./wget -h
 ```
 
