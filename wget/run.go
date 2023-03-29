@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -148,7 +149,7 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	if Flags.B_Flag {
 		if Flags.RateLimit_Flag != "" {
-			limit := ConvertLimit(Flags.RateLimit_Flag)
+			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag))
 			bucket := ratelimit.NewBucketWithRate(float64(limit), int64(limit))
 			data, _ = io.Copy(bufferedWriter, ratelimit.Reader(resp.Body, bucket))
 		} else {
@@ -160,7 +161,7 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 			"Downloading: "+fileName,
 		)
 		if Flags.RateLimit_Flag != "" {
-			limit := ConvertLimit(Flags.RateLimit_Flag)
+			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag))
 			bucket := ratelimit.NewBucketWithRate(float64(limit), int64(limit))
 			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), ratelimit.Reader(resp.Body, bucket))
 		} else {

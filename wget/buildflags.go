@@ -23,14 +23,14 @@ type WgetFlags struct {
 func BuildFlags() {
 	//boolean flags
 	flag.BoolVar(&Flags.H_Flag, "h", false, "Helpful information for the user")
-	flag.BoolVar(&Flags.Mirror_Flag, "mirror", false, "Mirror flag for cloning the webpage")
-	flag.BoolVar(&Flags.B_Flag, "B", false, "Logging process to wget-log")
+	flag.BoolVar(&Flags.Mirror_Flag, "mirror", false, "Mirror flag for CLONING webpages")
+	flag.BoolVar(&Flags.B_Flag, "B", false, "BACKGROUND downloading")
 	//string flags
-	flag.StringVar(&Flags.O_Flag, "O", "", "Flag for output filename")
-	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "Maximum download speed for downloads")
-	flag.StringVar(&Flags.I_Flag, "i", "", "Downloading multiple files from file")
-	flag.StringVar(&Flags.X_Flag, "x", "", "Exclude files from being downloaded")
-	flag.StringVar(&Flags.P_Flag, "P", "", "Set download directory")
+	flag.StringVar(&Flags.O_Flag, "O", "", "Flag for downloaded file Name")
+	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "SET Maximum download speed for downloads")
+	flag.StringVar(&Flags.I_Flag, "i", "", "Downloading MULTIPLE files from file")
+	flag.StringVar(&Flags.X_Flag, "x", "", "EXCLUDE files from being downloaded")
+	flag.StringVar(&Flags.P_Flag, "P", "", "SET download directory")
 	flag.Parse() // parsing built flags to flags variable
 
 	//links flag
