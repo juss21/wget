@@ -6,31 +6,15 @@ import (
 	"wget/wget"
 )
 
-/*todo ja gtn
-todo: luua wget-log (-B flag)
-todo: teha mirror	(-mirror flag)
-todo: rate-limiter	(--rate-limit flag)
-
-gtn: average dl etc (numbrid overall) katki nüüd doLogging() funci pärast :)
-gtn: downloads.txt
-on 2 tekstifaili mis viskavad errorisse
-HTTP request sent, awaiting response... 403 Forbidden
-see on sellepärast, et see veebileht ei lase tõmmata sealt
-peame oma wgetile lisama browseri headeri vms request.Header.Add()
-
-todo: code cleanup
-muidu redis vist, paneb auditi käima v?
-*/
-
 func main() {
-	wget.BuildFlags()
+	wget.BuildFlags() // build flags
 	if len(os.Args) == 1 {
 		printUsage()
 	} else if wget.Flags.H_Flag {
 		printHelp()
 	}
 
-	wget.Run() // wget
+	wget.Run() // run wget
 }
 
 func printUsage() {
