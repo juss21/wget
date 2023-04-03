@@ -30,7 +30,7 @@ func BuildFlags() {
 	flag.StringVar(&Flags.O_Flag, "O", "", "Flag for downloaded file Name")
 	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "SET Maximum download speed for downloads")
 	flag.StringVar(&Flags.I_Flag, "i", "", "Downloading MULTIPLE files from file")
-	flag.StringVar(&Flags.X_Flag, "x", "", "EXCLUDE folders from being downloaded")
+	flag.StringVar(&Flags.X_Flag, "X", "", "EXCLUDE folders from being downloaded")
 	flag.StringVar(&Flags.Reject_Flag, "reject", "", "EXCLUDE files from being downloaded")
 
 	flag.StringVar(&Flags.P_Flag, "P", "", "SET download directory")
