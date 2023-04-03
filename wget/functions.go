@@ -121,7 +121,7 @@ func ConvertLimit(base string) int {
 		limit *= 1024
 	} else if strings.HasSuffix(strings.ToLower(base), "m") {
 		limit, _ = strconv.Atoi(strings.TrimSuffix(base, "m"))
-		limit *= 1048576
+		limit *= 1000000//48576
 	}
 	return limit
 }
