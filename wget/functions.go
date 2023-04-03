@@ -57,14 +57,12 @@ func doLogging(input string, newline bool) {
 
 // shorten time duration
 func shortTimeDur(d time.Duration) string {
-	s := d.String()
-	if strings.HasSuffix(s, "m0s") {
-		s = s[:len(s)-2]
-	}
-	if strings.HasSuffix(s, "h0m") {
-		s = s[:len(s)-2]
-	}
-	return s
+    s := d.String()
+    v, err := strconv.ParseFloat(s[:len(s)-2], 64)
+    if err != nil {
+        fmt.Println(err)
+    }
+    return fmt.Sprintf("%.2f", v) + s[len(s)-2:]
 }
 
 // create path if not exists
