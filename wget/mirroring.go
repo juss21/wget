@@ -13,13 +13,12 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-		/*
-			TODO:
-			X_flag
-			Mirror output info
-			vb veel midagi
-		*/
-
+/*
+	TODO:
+	X_flag
+	Mirror output info
+	vb veel midagi
+*/
 
 func mirrorResponse(url string) *http.Response {
 
@@ -33,10 +32,19 @@ func mirrorResponse(url string) *http.Response {
 	return resp
 }
 func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
-
-	corndogRegExp := regexp.MustCompile(`url([(].)([^)])([^']*)`)
-	imageRegExp := regexp.MustCompile(`src=["']([^"']+)["']`)
-	linksRegExp := regexp.MustCompile(`href=["']([^"']+)["']`)
+	var corndogRegExp, imageRegExp, linksRegExp *regexp.Regexp
+	if Flags.X_Flag != "" || Flags.Reject_Flag != "" {
+		if Flags.X_Flag == "" {
+			Flags.X_Flag = Flags.Reject_Flag
+		}
+		corndogRegExp = regexp.MustCompile(`url([(].)([^)])([^`+Flags.X_Flag+`])([^']*)`)
+		imageRegExp = regexp.MustCompile(`src=["']([^"']+)([^`+Flags.X_Flag+`])["']`)
+		linksRegExp = regexp.MustCompile(`href=["']([^"']+)([^`+Flags.X_Flag+`])["']`)
+	} else {
+		corndogRegExp = regexp.MustCompile(`url([(].)([^)])([^']*)`)
+		imageRegExp = regexp.MustCompile(`src=["']([^"']+)["']`)
+		linksRegExp = regexp.MustCompile(`href=["']([^"']+)["']`)
+	}
 	//var links, images []string
 	corn := corndogRegExp.FindAllStringSubmatch(string(content), -1)
 	for _, item := range corn {
@@ -88,13 +96,12 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	response := mirrorResponse(url)
 	createPath("downloads/")
 	createPath("downloads/" + surl[2])
-	if len(FilenameSlice) > 0 {
+	if len(FilenameSlice) > 1 {
 		createPath("downloads/" + surl[2] + "/" + FilenameSlice[0] + "/")
 		for i := 0; i < len(FilenameSlice); i++ {
 			createPath("downloads/" + surl[2] + "/" + strings.Join(FilenameSlice[:i], "/"))
 		}
 	}
-
 
 	var file *os.File
 	var erro error

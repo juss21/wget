@@ -87,6 +87,48 @@ echo 'Was the download made in "silence" (without displaying anything to the ter
 echo "Press enter to continue"
 read "Press enter to continue"
 
+echo Try to run the following command "./wget --mirror http://corndog.io/", then try to open the "index.html" with a browser
+go run . --mirror http://corndog.io/
+echo Is the site working?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to run the following command "./wget --mirror https://oct82.com/", then try to open the "index.html" with a browser
+go run . --mirror https://oct82.com/
+echo Is the site working?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to run the following command "./wget --mirror --reject=gif https://oct82.com/", then try to open the "index.html" with a browser
+go run . --mirror --reject=gif https://oct82.com/
+echo Did the program download the site without the GIFs?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to run the following command "./wget --mirror https://trypap.com/", then use the command "ls" to see the file system of the created folder.
+go run . --mirror https://trypap.com/
+echo css  img  index.html
+echo Does the created folder has the same fs as above?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to run the following command "./wget --mirror -X=/img https://trypap.com/", then use the command "ls" to see the file system of the created folder.
+go run . --mirror -X=/img https://trypap.com/
+echo css  img  index.html
+echo Does the created folder has the same fs as above?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to run the following command "./wget --mirror https://theuselessweb.com/"
+go run . --mirror https://theuselessweb.com/
+echo Is the site working?
+echo "Press enter to continue"
+read "Press enter to continue"
+
+echo Try to mirror a website of your own choice "./wget --mirror https://www.postimees.ee"
+go run . --mirror https://www.postimees.ee
+echo Did the program mirror the website?
+echo
 echo 'END OF SCRIPT, TO EXIT PLEASE PRESS ENTER'
 echo "Press enter to continue"
 read "Press enter to continue"

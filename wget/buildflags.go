@@ -9,13 +9,14 @@ import (
 var Flags WgetFlags
 
 type WgetFlags struct {
-	H_Flag         bool     // flag for help
-	O_Flag         string   // flag for filename output
-	Mirror_Flag    bool     // flag for mirroring website
-	RateLimit_Flag string   // flag for rame-limiting
-	I_Flag         string   // flag for downloading multiple files "./wget -i=downloads.txt"
-	B_Flag         bool     // flag for logging output instead printing it out
-	X_Flag         string   // flag for excluding files (ex. skipping/cutting out the /img folder --mirror https://trypap.com/)
+	H_Flag         bool   // flag for help
+	O_Flag         string // flag for filename output
+	Mirror_Flag    bool   // flag for mirroring website
+	RateLimit_Flag string // flag for rame-limiting
+	I_Flag         string // flag for downloading multiple files "./wget -i=downloads.txt"
+	B_Flag         bool   // flag for logging output instead printing it out
+	X_Flag         string // flag for excluding folders (ex. skipping/cutting out the /img folder --mirror https://trypap.com/)
+	Reject_Flag    string // flag for excluding file types
 	P_Flag         string   // flag for setting download directory
 	Links          []string // links
 }
@@ -29,7 +30,9 @@ func BuildFlags() {
 	flag.StringVar(&Flags.O_Flag, "O", "", "Flag for downloaded file Name")
 	flag.StringVar(&Flags.RateLimit_Flag, "rate-limit", "", "SET Maximum download speed for downloads")
 	flag.StringVar(&Flags.I_Flag, "i", "", "Downloading MULTIPLE files from file")
-	flag.StringVar(&Flags.X_Flag, "x", "", "EXCLUDE files from being downloaded")
+	flag.StringVar(&Flags.X_Flag, "x", "", "EXCLUDE folders from being downloaded")
+	flag.StringVar(&Flags.Reject_Flag, "reject", "", "EXCLUDE files from being downloaded")
+
 	flag.StringVar(&Flags.P_Flag, "P", "", "SET download directory")
 	flag.Parse() // parsing built flags to flags variable
 
