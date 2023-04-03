@@ -32,8 +32,8 @@ func Run() {
 			tempFile = Flags.O_Flag
 		}
 
-		download_started := time.Now().Format("--2006-01-02 15:04:05--")
-		doLogging(download_started+"\t"+url, true)
+		download_started := "Download started: " + time.Now().Format("--2006-01-02 15:04:05--")
+		doLogging(download_started, true)
 
 		if !Flags.Mirror_Flag {
 			go startDownload(url, shorturl, tempFile, givenpath, httpmethod)

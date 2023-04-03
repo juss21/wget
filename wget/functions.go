@@ -82,9 +82,9 @@ func createPath(path string) string {
 
 // get port from httpmethod
 func GetPortFromHttpMethod(s string) (port string) {
-	if strings.ToLower(s) == "https:" {
+	if strings.ToLower(s) == "https" {
 		port = "443"
-	} else if strings.ToLower(s) == "http:" {
+	} else if strings.ToLower(s) == "http" {
 		port = "80"
 	} else if strings.ToLower(s) == "telnet" {
 		port = "23"
