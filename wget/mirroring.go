@@ -13,12 +13,6 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-/*
-	TODO:
-	X_flag
-	Mirror output info
-	vb veel midagi
-*/
 
 func mirrorResponse(url string) *http.Response {
 
@@ -32,7 +26,9 @@ func mirrorResponse(url string) *http.Response {
 	return resp
 }
 func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
+	
 	var corndogRegExp, imageRegExp, linksRegExp *regexp.Regexp
+
 	if Flags.X_Flag != "" || Flags.Reject_Flag != "" {
 		if Flags.X_Flag == "" {
 			Flags.X_Flag = Flags.Reject_Flag

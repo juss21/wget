@@ -142,12 +142,14 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 
 	rurl = url
 
-	if len(split) > 4 {
-		givenpath = "downloads/" + rebuilt[2]
-		for j := len(split) - 1; j > 2; j-- {
-			if strings.Contains(split[j], ".") {
-				givenfilename = split[j]
-				break
+	if len(split) > 3 {
+		if split[3] != "" {
+			givenpath = "downloads/" + rebuilt[2]
+			for j := len(split) - 1; j > 2; j-- {
+				if strings.Contains(split[j], ".") {
+					givenfilename = split[j]
+					break
+				}
 			}
 		}
 	} else {

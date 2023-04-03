@@ -107,7 +107,9 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 		if Flags.RateLimit_Flag != "" {
 			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag))
 			bucket := ratelimit.NewBucketWithRate(float64(limit), int64(limit))
-			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), ratelimit.Reader(resp.Body, bucket))
+			body := ratelimit.Reader(resp.Body, bucket)
+			time.Sleep(1 * time.Second)
+			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), body)
 		} else {
 			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
 		}
@@ -139,5 +141,3 @@ func FileInfo(FileName, url string) (size int64, FileType string) {
 	contentType = http.DetectContentType(buf)
 	return size, contentType
 }
-
-
