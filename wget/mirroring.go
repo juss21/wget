@@ -13,7 +13,6 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-
 func mirrorResponse(url string) *http.Response {
 
 	//client
@@ -26,16 +25,16 @@ func mirrorResponse(url string) *http.Response {
 	return resp
 }
 func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
-	
+
 	var corndogRegExp, imageRegExp, linksRegExp *regexp.Regexp
 
 	if Flags.X_Flag != "" || Flags.Reject_Flag != "" {
 		if Flags.X_Flag == "" {
 			Flags.X_Flag = Flags.Reject_Flag
 		}
-		corndogRegExp = regexp.MustCompile(`url([(].)([^)])([^`+Flags.X_Flag+`])([^']*)`)
-		imageRegExp = regexp.MustCompile(`src=["']([^"']+)([^`+Flags.X_Flag+`])["']`)
-		linksRegExp = regexp.MustCompile(`href=["']([^"']+)([^`+Flags.X_Flag+`])["']`)
+		corndogRegExp = regexp.MustCompile(`url([(].)([^)])([^']*)`)
+		imageRegExp = regexp.MustCompile(`src=["']([^"']+)([^` + Flags.X_Flag + `])["']`)
+		linksRegExp = regexp.MustCompile(`href=["']([^"']+)([^` + Flags.X_Flag + `])["']`)
 	} else {
 		corndogRegExp = regexp.MustCompile(`url([(].)([^)])([^']*)`)
 		imageRegExp = regexp.MustCompile(`src=["']([^"']+)["']`)
@@ -49,11 +48,19 @@ func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
 
 	sub := linksRegExp.FindAllStringSubmatch(string(content), -1)
 	for _, item := range sub {
-		links = append(links, item[1])
+		if Flags.X_Flag != "" || Flags.Reject_Flag != "" {
+			links = append(links, item[1]+item[2])
+		} else {
+			links = append(links, item[1])
+		}
 	}
 	subMatchSlice := imageRegExp.FindAllStringSubmatch(string(content), -1)
 	for _, item := range subMatchSlice {
-		images = append(images, item[1])
+		if Flags.X_Flag != "" || Flags.Reject_Flag != "" {
+			images = append(images, item[1]+item[2])
+		} else {
+			images = append(images, item[1])
+		}
 	}
 	return
 }
