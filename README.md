@@ -8,22 +8,22 @@
 - Downloading multiple files at the same time, by reading a file containing multiple donwload links asynchronously
 - Main feature to download an entire website, [mirroring a website](https://en.wikipedia.org/wiki/Mirror_site)
 
-## Methods 
-You can try Building the project
-```
-~/j/go/gitea/wget> go build .
-~/j/go/gitea/wget> ./wget <url>
-```
+## Usage 
 
-You can try Running it by hand
+How to run: 
 ```
 ~/j/go/gitea/wget> go run . <url>
+
+~/j/go/gitea/wget> go run . --<Flag> <url>
 ```
 
-Project help
+Project help:
 ```
-~/j/go/gitea/wget> go run . -h 
-~/j/go/gitea/wget> ./wget -h
+//for usage help
+~/j/go/gitea/wget> go run . -h
+
+//for usable flag list
+~/j/go/gitea/wget> go run . -help
 ```
 
 **Authors:**

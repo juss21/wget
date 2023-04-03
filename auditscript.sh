@@ -10,7 +10,6 @@ read "Press enter to continue"
 
 echo 'Try to run the following command with a link at your choice "./wget <https://link_of_your_choice.com>"'
 echo ""
-go run . https://01.kood.tech/git/avatars/565c6475af5a57a5ef5202227c288f5f?
 go run . https://i.pinimg.com/originals/e2/c6/1c/e2c61c6a0ca0f02097751bb19cae5f50.jpg
 echo 'Did the program download the expected file?'
 echo "Press enter to continue"
@@ -114,7 +113,7 @@ read "Press enter to continue"
 
 echo Try to run the following command "./wget --mirror -X=/img https://trypap.com/", then use the command "ls" to see the file system of the created folder.
 go run . --mirror -X=/img https://trypap.com/
-echo css  img  index.html
+echo css index.html
 echo Does the created folder has the same fs as above?
 echo "Press enter to continue"
 read "Press enter to continue"
