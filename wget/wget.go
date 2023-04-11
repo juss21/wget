@@ -117,8 +117,9 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag))
 			bucket := ratelimit.NewBucketWithRate(float64(limit), int64(limit))
 			body := ratelimit.Reader(resp.Body, bucket)
-			time.Sleep(1 * time.Second)
-			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), body)
+		
+			io.CopyN(io.MultiWriter(file, bar), ratelimit.Reader(body, bucket), resp.ContentLength/6)
+			data, _ = io.Copy(io.MultiWriter(file, bar), body)
 		} else {
 			data, _ = io.Copy(io.MultiWriter(bufferedWriter, bar), resp.Body)
 		}
