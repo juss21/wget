@@ -2,6 +2,7 @@ package wget
 
 import (
 	"bufio"
+
 	//"bytes"
 	"io"
 	//"io/ioutil"
@@ -37,9 +38,15 @@ func getResponse(link, httpmethod, shorturl, fileName, givenpath string) (*http.
 	doLogging("Connecting "+shorturl+" ("+shorturl+")|"+ip[0].String()+"|:"+Port+"...", false)
 
 	size, filetype := FileInfo(fileName, link)
+
 	if !strings.Contains(fileName, ".") {
-		Type := strings.Split(filetype, "/")
-		fileName += "." + strings.TrimSuffix(Type[1], "]")
+		if !strings.Contains(filetype, "octet-stream") {
+			Type := strings.Split(filetype, "/")
+
+			fileName += "." + strings.TrimSuffix(Type[1], "]")
+		} else {
+			fileName += "." + "zip"
+		}
 	}
 	//client
 	req, err := http.NewRequest("GET", link, nil)
@@ -72,11 +79,13 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 	var file *os.File
 	if Flags.P_Flag == "" {
 		createPath("downloads/")
+
 		if strings.HasPrefix(directory, "downloads/") {
 			createPath(directory)
 		} else {
 			createPath("downloads/" + directory)
 		}
+
 		fileo, erro := os.OpenFile(directory+"/"+fileName, os.O_CREATE|os.O_WRONLY, 0o644)
 		errorHandler(erro, false)
 		file = fileo
@@ -93,7 +102,7 @@ func writeToFile(directory, fileName string, resp *http.Response) (elapsed time.
 	bufferedWriter := bufio.NewWriterSize(file, bufSize)
 	if Flags.B_Flag {
 		if Flags.RateLimit_Flag != "" {
-			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag)) 
+			limit := ConvertLimit(strings.ToLower(Flags.RateLimit_Flag))
 			bucket := ratelimit.NewBucketWithRate(float64(limit), int64(limit))
 			data, _ = io.Copy(bufferedWriter, ratelimit.Reader(resp.Body, bucket))
 		} else {

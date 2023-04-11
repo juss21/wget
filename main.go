@@ -8,9 +8,11 @@ import (
 
 func main() {
 	wget.BuildFlags() // build flags
+	wget.FlagErrors() // checking flag incompatibility
+
 	if len(os.Args) == 1 {
 		printUsage()
-	} else if wget.Flags.H_Flag {
+	} else if wget.Flags.H_Flag || wget.Flags.H_Flag2 {
 		printHelp()
 	}
 

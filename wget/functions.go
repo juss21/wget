@@ -57,12 +57,12 @@ func doLogging(input string, newline bool) {
 
 // shorten time duration
 func shortTimeDur(d time.Duration) string {
-    s := d.String()
-    v, err := strconv.ParseFloat(s[:len(s)-2], 64)
-    if err != nil {
-        fmt.Println(err)
-    }
-    return fmt.Sprintf("%.2f", v) + s[len(s)-2:]
+	s := d.String()
+	v, err := strconv.ParseFloat(s[:len(s)-2], 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return fmt.Sprintf("%.2f", v) + s[len(s)-2:]
 }
 
 // create path if not exists
@@ -121,7 +121,7 @@ func ConvertLimit(base string) int {
 		limit *= 1024
 	} else if strings.HasSuffix(strings.ToLower(base), "m") {
 		limit, _ = strconv.Atoi(strings.TrimSuffix(base, "m"))
-		limit *= 1000000//48576
+		limit *= 1000000 //48576
 	}
 	return limit
 }
@@ -140,8 +140,9 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 
 	rurl = url
 
-	if len(split) > 3 {
+	if len(split) > 4 {
 		if split[3] != "" {
+
 			givenpath = "downloads/" + rebuilt[2]
 			for j := len(split) - 1; j > 2; j-- {
 				if strings.Contains(split[j], ".") {
@@ -152,6 +153,7 @@ func sliceUrl(url string) (rurl, cleanurl, givenfilename, givenpath, httpmethod 
 		}
 	} else {
 		givenpath = "downloads/"
+		givenfilename = split[len(split)-1]
 	}
 	cleanurl = rebuilt[1]
 	httpmethod = rebuilt[0]
@@ -172,5 +174,10 @@ func AppendLinks(links, images []string, baseurl string) (FinalLinks []string) {
 			FinalLinks = append(FinalLinks, img)
 		}
 	}
+
+	for fl := 0; fl < len(FinalLinks); fl++ {
+		FinalLinks[fl] = strings.Replace(FinalLinks[fl], "/./", "/", -1)
+	}
+
 	return
 }

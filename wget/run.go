@@ -40,18 +40,17 @@ func Run() {
 		} else {
 			file, content := startMirroring(url, httpmethod, "", "")
 			links, images := GetLinksFromTemp(file, content)
-			
+
 			NewLinks := AppendLinks(links, images, url)
-			DownloadLinks(NewLinks, httpmethod)
+			DownloadLinks(NewLinks, url, httpmethod)
 		}
+		//maximum of 3 links
 		if i >= 2 {
 			break
 		}
 	}
 	wg.Wait()
 }
-
-
 
 func startDownload(url, shorturl, filename, givenpath, httpMethod string) {
 

@@ -13,8 +13,8 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-func mirrorResponse(url string) *http.Response {
-
+func mirrorResponse(filename, url string) (r *http.Response, filetype string) {
+	_, filetype = FileInfo(filename, url)
 	//client
 	req, err := http.NewRequest("GET", url, nil)
 	errorHandler(err, true)
@@ -22,7 +22,7 @@ func mirrorResponse(url string) *http.Response {
 	req.Header.Add("User-Agent", `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11`)
 	resp, err3 := http.DefaultClient.Do(req)
 	errorHandler(err3, true)
-	return resp
+	return resp, filetype
 }
 func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
 
@@ -65,8 +65,15 @@ func GetLinksFromTemp(file *os.File, content []byte) (links, images []string) {
 	return
 }
 
-func DownloadLinks(Links []string, httpmethod string) {
+func DownloadLinks(Links []string, url, httpmethod string) {
+	fmt.Println(Links)
 	for i, url := range Links {
+		strings.Replace(Links[i], "/./", "/", -1)
+		if Links[i][len(Links[i])-1] == '/' {
+			fmt.Println("err", Links[i], url)
+			continue
+		}
+		fmt.Println(i, Links[i])
 		wg.Add(1)
 		var path, filename string
 		split_url := strings.Split(url, "/")
@@ -96,7 +103,8 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	surl := strings.Split(url, "/")
 	FilenameSlice := strings.Split(filename, "/")
 
-	response := mirrorResponse(url)
+	response, file_type := mirrorResponse(filename, url)
+
 	createPath("downloads/")
 	createPath("downloads/" + surl[2])
 	if len(FilenameSlice) > 1 {
@@ -112,6 +120,9 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 		file, erro = os.OpenFile("downloads/"+surl[2]+"/index.html", os.O_CREATE|os.O_WRONLY, 0o644)
 		errorHandler(erro, true)
 	} else {
+		if strings.Contains(file_type, "text/html") {
+			filename += ".html"
+		}
 		file, erro = os.OpenFile(path+"/"+filename, os.O_CREATE|os.O_WRONLY, 0o644)
 		errorHandler(erro, true)
 	}
@@ -120,6 +131,7 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	errorHandler(err1, true)
 
 	CopyThat = []byte(strings.ReplaceAll(string(CopyThat), "url('/", "url('./"))
+	CopyThat = []byte(strings.ReplaceAll(string(CopyThat), `="/`, `="./`))
 
 	bar := progressbar.DefaultBytes(
 		bytes.NewReader(CopyThat).Size(),
@@ -131,6 +143,5 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	fmt.Println()
 
 	wg.Done()
-
 	return file, CopyThat
 }
