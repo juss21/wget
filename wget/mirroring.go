@@ -131,7 +131,7 @@ func startMirroring(url, httpmethod, filename, path string) (*os.File, []byte) {
 	errorHandler(err1, true)
 
 	CopyThat = []byte(strings.ReplaceAll(string(CopyThat), "url('/", "url('./"))
-	CopyThat = []byte(strings.ReplaceAll(string(CopyThat), `="/`, `="./`))
+	CopyThat = []byte(strings.ReplaceAll(string(CopyThat), `href="/`, `href="./`))
 
 	bar := progressbar.DefaultBytes(
 		bytes.NewReader(CopyThat).Size(),
